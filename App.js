@@ -1,4 +1,6 @@
-import React from 'react';
+import 'react-native-gesture-handler';
+
+import * as React from 'react';
 import {
   SafeAreaView,
   TouchableOpacity,
@@ -7,36 +9,40 @@ import {
   Text,
 } from 'react-native';
 
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="CTEs">
+        <Stack.Screen name="CTEs" component={CTEScreen} />
+        <Stack.Screen name="Alex" component={DetailsScreen} />
+        <Stack.Screen name="Jason" component={DetailsScreen} />
+        <Stack.Screen name="Mohit" component={DetailsScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+const Stack = createStackNavigator();
+
 const DATA = [
   {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    id: '1',
     title: 'Alex',
   },
   {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+    id: '2',
     title: 'Jason',
   },
   {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    id: '3',
     title: 'Mohit',
   },
 ];
 
-function Item({ id, title, selected, onSelect }) {
-  return (
-    <TouchableOpacity
-      onPress={() => onSelect(id)}
-      style={[
-        styles.item,
-        { backgroundColor: selected ? '#ae3b6e' : '#a9c2ff' },
-      ]}
-    >
-      <Text style={styles.title}>{title}</Text>
-    </TouchableOpacity>
-  );
-}
-
-export default function App() {
+function CTEScreen({ navigation }) {
   const [selected, setSelected] = React.useState(new Map());
 
   const onSelect = React.useCallback(
@@ -47,9 +53,11 @@ export default function App() {
       setSelected(newSelected);
     },
     [selected],
+    //navigation.push('Alex')
   );
 
   return (
+
     <SafeAreaView style={styles.container}>
       <FlatList
         data={DATA}
@@ -68,10 +76,45 @@ export default function App() {
   );
 }
 
+
+function Item({ id, title, selected, onSelect }) {
+  return (
+    <TouchableOpacity
+      onPress={() => onSelect(id)}
+      style={[
+        styles.item,
+        { backgroundColor: selected ? '#ae3b6e' : '#a9c2ff' },
+      ]}
+    >
+      <Text style={styles.title}>{title}</Text>
+    </TouchableOpacity>
+  );
+}
+
+
+function DetailsScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Details Screen</Text>
+      <Button
+        title="Go to Details... again"
+        onPress={() => navigation.push('Details')}
+      />
+      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
+      <Button title="Go back" onPress={() => navigation.goBack()} />
+      <Button
+        title="Go back to first screen in stack"
+        onPress={() => navigation.popToTop()}
+      />
+    </View>
+  );
+}
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 100,
+    marginTop: 10,
   },
   item: {
     backgroundColor: '#f9c2ff',
