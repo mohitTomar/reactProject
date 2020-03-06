@@ -1,48 +1,81 @@
-import 'react-native-gesture-handler';
-
 import * as React from 'react';
-import {
-  SafeAreaView,
-  TouchableOpacity,
-  FlatList,
-  StyleSheet,
-  Text,
-} from 'react-native';
-
+import { Button, View, Text, SafeAreaView, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-export default function App() {
+
+
+function HomeScreen({ navigation }) {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="CTEs">
-        <Stack.Screen name="CTEs" component={CTEScreen} />
-        <Stack.Screen name="Alex" component={DetailsScreen} />
-        <Stack.Screen name="Jason" component={DetailsScreen} />
-        <Stack.Screen name="Mohit" component={DetailsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>first screen</Text>
+      <Button
+        title="Go to next"
+        onPress={() => navigation.navigate('Details')}
+      />
+    </View>
+  );
+}
+
+
+
+function DetailsScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Details Screen</Text>
+      
+      <Button title="Navigate to API" onPress={() => navigation.navigate('API')} />
+      <Button title="Go back" onPress={() => navigation.goBack()} />
+      
+    </View>
   );
 }
 
 const Stack = createStackNavigator();
 
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="API" component={TableScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+
 const DATA = [
   {
-    id: '1',
-    title: 'Alex',
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'First Item',
   },
   {
-    id: '2',
-    title: 'Jason',
+    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+    title: 'Second Item',
   },
   {
-    id: '3',
-    title: 'Mohit',
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Third Item',
   },
 ];
 
-function CTEScreen({ navigation }) {
+function Item({ id, title, selected, onSelect }) {
+  return (
+    <TouchableOpacity
+      onPress={() => onSelect(id)}
+      style={[
+        styles.item,
+        { backgroundColor: selected ? '#ae3b6e' : '#a9c2ff' },
+      ]}
+    >
+      <Text style={styles.title}>{title}</Text>
+    </TouchableOpacity>
+  );
+}
+
+function TableScreen({ navigation }) {
   const [selected, setSelected] = React.useState(new Map());
 
   const onSelect = React.useCallback(
@@ -53,11 +86,9 @@ function CTEScreen({ navigation }) {
       setSelected(newSelected);
     },
     [selected],
-    //navigation.push('Alex')
   );
 
   return (
-
     <SafeAreaView style={styles.container}>
       <FlatList
         data={DATA}
@@ -76,41 +107,6 @@ function CTEScreen({ navigation }) {
   );
 }
 
-
-function Item({ id, title, selected, onSelect }) {
-  return (
-    <TouchableOpacity
-      onPress={() => onSelect(id)}
-      style={[
-        styles.item,
-        { backgroundColor: selected ? '#ae3b6e' : '#a9c2ff' },
-      ]}
-    >
-      <Text style={styles.title}>{title}</Text>
-    </TouchableOpacity>
-  );
-}
-
-
-function DetailsScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Details Screen</Text>
-      <Button
-        title="Go to Details... again"
-        onPress={() => navigation.push('Details')}
-      />
-      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
-      <Button title="Go back" onPress={() => navigation.goBack()} />
-      <Button
-        title="Go back to first screen in stack"
-        onPress={() => navigation.popToTop()}
-      />
-    </View>
-  );
-}
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -126,3 +122,6 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
 });
+
+
+export default App;
